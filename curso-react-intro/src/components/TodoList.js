@@ -1,6 +1,6 @@
 function TodoList(props) {
   return (
-    <ul>
+    <ul className="flex flex-col w-96 items-center gap-y-3">
       {props.children}
     </ul>
   )
