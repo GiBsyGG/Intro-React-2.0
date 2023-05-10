@@ -1,4 +1,13 @@
-function TodoCounter({ total, completed }) {
+import { useContext } from "react";
+import { TodoContext } from "../context/TodoContext";
+
+function TodoCounter() {
+
+  const {
+    totalTodos: total,
+    completedTodos: completed,
+  } = useContext(TodoContext)
+
   if (total === 0) {
     return (
       <h1 className="text-3xl text-center">
