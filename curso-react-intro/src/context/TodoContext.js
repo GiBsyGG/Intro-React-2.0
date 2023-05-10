@@ -56,6 +56,21 @@ function TodoProvider({ children }) {
       // Actualizo los ToDos con persistencia
       saveTodos(newTodos);
     };
+
+    // Funcion para añadir ToDos
+    const addTodo = (text) => {
+      // Creo una copia del array de ToDos, usando el operador spread
+      const newTodos = [...todos];
+      // Añado el ToDo al array
+      newTodos.push({
+        // Al tener el mismo nombre no es necesario text: text
+        text,
+        completed: false,
+      });
+
+      // Actualizo los ToDos con persistencia
+      saveTodos(newTodos);
+    };
   
   return (
     <TodoContext.Provider value={{
@@ -69,6 +84,8 @@ function TodoProvider({ children }) {
       toggleCompleteTodo,
       deleteTodo,
       openModal,
+      setOpenModal,
+      addTodo,
     }}>
       { children }
     </TodoContext.Provider>

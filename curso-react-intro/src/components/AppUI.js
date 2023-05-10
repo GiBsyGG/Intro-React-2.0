@@ -3,6 +3,7 @@ import { TodoCounter } from "./TodoCounter";
 import { TodoItem } from "./TodoItem";
 import { TodoSearch } from "./TodoSearch";
 import { TodoList } from "./TodoList";
+import { TodoForm } from "./TodoForm";
 import { CreateTodoButton } from "./CreateTodoButton";
 import { EmptyTodos } from "./EmptyTodos";
 import { TodosLoading } from "./TodosLoading";
@@ -47,7 +48,7 @@ function AppUI() {
 
       {openModal && (
         <Modal>
-          {/* Funcionalidad de agregar ToDos */}
+          <TodoForm />
         </Modal>
       )}
     </div>

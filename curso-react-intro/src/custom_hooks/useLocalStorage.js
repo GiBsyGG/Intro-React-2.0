@@ -40,7 +40,7 @@ function useLocalStorage(itemName, initialValue) {
         // Actualizamos de igual forma el estado de carga
         setLoading(false)
       }
-    }, 2000)
+    }, 1000)
   }, [])
 
   // Función para guardar los Items en el localStorage
