@@ -24,7 +24,7 @@ function TodoForm() {
         onSubmit={onSubmit}
         className="flex flex-col gap-y-4"
       >
-        <h3 className="text-xl font-bold text-center">Ingresa tu nuevo ToDo</h3>
+        <h3 className="text-xl font-bold text-center">Nuevo ToDo</h3>
         <textarea
           type="text"
           placeholder="Escribe tu nuevo ToDo"
