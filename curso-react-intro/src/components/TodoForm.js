@@ -1,12 +1,9 @@
-import { useContext, useState } from "react";
-import { TodoContext } from "../context/TodoContext";
+import { useState } from "react";
 
-function TodoForm() {
+function TodoForm({ setOpenModal, addTodo }) {
 
   // Estado para el valor del nuevo ToDo del formulario
   const [newTodoValue, setNewTodoValue] = useState("");
-
-  const { setOpenModal, addTodo } = useContext(TodoContext);
 
   const onSubmit = (event) => {
     event.preventDefault();
@@ -35,12 +32,12 @@ function TodoForm() {
           className="p-3 border border-slate-300 focus:outline-none focus:border-violet-700 focus:ring-violet-700"
         />
         <div className="flex flex-row gap-x-3 font-bold">
-          <button
+          <div
             onClick={() => setOpenModal(false)}
-            className="w-32 h-10 bg-gray-300 rounded-xl hover:bg-slate-200"
+            className="w-32 h-10 bg-gray-300 rounded-xl hover:bg-slate-200 flex justify-center items-center"
           >
             Cancelar
-          </button>
+          </div>
           <button
             type="submit"
             className="w-32 h-10 bg-violet-700 rounded-xl text-white hover:bg-violet-400"

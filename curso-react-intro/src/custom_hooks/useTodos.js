@@ -1,11 +1,8 @@
-import { createContext } from "react";
 import { useState } from "react";
-import { useLocalStorage } from "../custom_hooks/useLocalStorage";
-
-const TodoContext = createContext();
+import { useLocalStorage } from "./useLocalStorage";
 
 // Esto se hace para mejorar el nombre y para encapsular la lógica compartida entre los componentes
-function TodoProvider({ children }) {
+function useTodos() {
 
     // Estado para el valor de la búsqueda
     const [searchValue, setSearchValue] = useState("");
@@ -16,6 +13,7 @@ function TodoProvider({ children }) {
       saveItem: saveTodos,
       loading,
       error,
+      sincronizeItem: sincronizeTodos,
     } = useLocalStorage("TODOS_V1", []);
 
     // Estado para abrir el modal
@@ -73,7 +71,7 @@ function TodoProvider({ children }) {
     };
   
   return (
-    <TodoContext.Provider value={{
+    {
       loading,
       error,
       completedTodos,
@@ -86,10 +84,9 @@ function TodoProvider({ children }) {
       openModal,
       setOpenModal,
       addTodo,
-    }}>
-      { children }
-    </TodoContext.Provider>
+      sincronizeTodos,
+    }
   )
 }
 
-export { TodoProvider, TodoContext };
+export { useTodos };

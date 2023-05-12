@@ -10,6 +10,9 @@ function useLocalStorage(itemName, initialValue) {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(false)
 
+  // Estado para sincronizar el localStorage con el estado de los items
+  const [sincronizedItem, setSincronizedItem] = useState(true)
+
   // Funcion para cargar los items del localStorage
   useEffect(() => {
     // Usaremos un tiempo con setTimeUp para simular una carga de datos de una API
@@ -34,14 +37,17 @@ function useLocalStorage(itemName, initialValue) {
         // Actualizamos el estado de carga despues de cargar los items
         setLoading(false)
 
+        // Actualizamos el estado de sincronización
+        setSincronizedItem(true)
+
       } catch (error) {
         // Si hay algun error, actualizamos el estado de error, en este caso no especificamos el error
         setError(true)
         // Actualizamos de igual forma el estado de carga
         setLoading(false)
       }
-    }, 1000)
-  }, [])
+    }, 2000)
+  }, [sincronizedItem]) // La advertencia que tenemos esto la ignoramos, no queremos que se ejecute cada vez que se cambien estas dependencias, pero si queremos que se ejecute cuando se cambie el estado de sincronizedItem
 
   // Función para guardar los Items en el localStorage
   const saveItem = (newItems) => {
@@ -54,23 +60,23 @@ function useLocalStorage(itemName, initialValue) {
     setItem(newItems)
   }
 
+  //Función para sincronizar los items
+  const sincronizeItem = () => {
+    // Al haber un cambio en los items, volvemos a cargar todo
+    setLoading(true)
+
+    // Actualizamos el estado de sincronización a false para que se dispare el useEffect
+    setSincronizedItem(false)
+  }
+
   // Retorno los Items y la función para guardarlos
   return {
     item,
     saveItem,
     loading,
-    error
+    error,
+    sincronizeItem,
   }
 }
 
 export { useLocalStorage }
-
-// const defaultTodos = [
-//   { text: "Cortar cebolla", completed: false },
-//   { text: "Tomar el curso de intro a React", completed: true },
-//   { text: "Llorar con la llorona", completed: false },
-//   { text: "Usar estados derivados", completed: true },
-//   { text: "Cuadrar el flex", completed: false },
-// ];
-
-// localStorage.setItem('TODOS_V1', JSON.stringify(defaultTodos))
