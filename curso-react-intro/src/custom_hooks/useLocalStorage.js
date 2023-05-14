@@ -1,17 +1,19 @@
-import { useState, useEffect } from 'react'
+import { useReducer, useEffect } from 'react'
 
 // Custom Hook para usar el localStorage
 function useLocalStorage(itemName, initialValue) {
 
-  // Crearemos un estado interno para los items que se guardará en el localStorage
-  const [item, setItem] = useState(initialValue)
+  // Usaremos useReducer para manejar el estado de los items
+  const [state, dispatch] = useReducer(reducer, initialState({ initialValue }))
   
-  // Crearemos un estado de carga y uno de error para comprobar si no hay items o solo se está cargando del localStorage
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(false)
+  // Destructuracion del estado para obtener los items
+  const { syncItem, loading, error, item } = state
 
-  // Estado para sincronizar el localStorage con el estado de los items
-  const [sincronizedItem, setSincronizedItem] = useState(true)
+  // ACTION CREATORS
+  const onError = (error) => dispatch({ type: actionTypes.error, payload: error })
+  const onSuccessfulLoad = (item) => dispatch({ type: actionTypes.successfulLoad, payload: item })
+  const onSave = (item) => dispatch({ type: actionTypes.save, payload: item })
+  const onSincronize = () => dispatch({ type: actionTypes.sincronize })
 
   // Funcion para cargar los items del localStorage
   useEffect(() => {
@@ -30,43 +32,36 @@ function useLocalStorage(itemName, initialValue) {
           parsedItems = initialValue
         } else {
           parsedItems = JSON.parse(localStorageItems)
-          // Si hay items en el localStorage, actualizo el estado de los items
-          setItem(parsedItems)
         }
 
-        // Actualizamos el estado de carga despues de cargar los items
-        setLoading(false)
-
-        // Actualizamos el estado de sincronización
-        setSincronizedItem(true)
-
+        // Si hay items en el localStorage, llamo a la función para guardarlos en el estado
+        onSuccessfulLoad(parsedItems)
       } catch (error) {
         // Si hay algun error, actualizamos el estado de error, en este caso no especificamos el error
-        setError(true)
-        // Actualizamos de igual forma el estado de carga
-        setLoading(false)
+        onError(error)
       }
-    }, 2000)
-  }, [sincronizedItem]) // La advertencia que tenemos esto la ignoramos, no queremos que se ejecute cada vez que se cambien estas dependencias, pero si queremos que se ejecute cuando se cambie el estado de sincronizedItem
+    }, 1000)
+  }, [syncItem]) // La advertencia que tenemos esto la ignoramos, no queremos que se ejecute cada vez que se cambien estas dependencias, pero si queremos que se ejecute cuando se cambie el estado de sincronizedItem
 
   // Función para guardar los Items en el localStorage
   const saveItem = (newItems) => {
-    
-    // LocalStorage solo guarda strings, por lo que hay que convertir el array de Items en un string
-    const stringifiedItems = JSON.stringify(newItems)
-    // Guardo los Items en el localStorage
-    window.localStorage.setItem(itemName, stringifiedItems)
-    // Actualizo el estado de los Items
-    setItem(newItems)
+    try {
+      // LocalStorage solo guarda strings, por lo que hay que convertir el array de Items en un string
+      const stringifiedItems = JSON.stringify(newItems)
+      // Guardo los Items en el localStorage
+      localStorage.setItem(itemName, stringifiedItems)
+      // Actualizo el estado de los Items
+      onSave(newItems)
+    }
+    catch (error) {
+      onError(error)
+    }
   }
 
   //Función para sincronizar los items
   const sincronizeItem = () => {
-    // Al haber un cambio en los items, volvemos a cargar todo
-    setLoading(true)
-
-    // Actualizamos el estado de sincronización a false para que se dispare el useEffect
-    setSincronizedItem(false)
+    // Al haber un cambio en los items, llamamos a la función para la sincronización
+    onSincronize()
   }
 
   // Retorno los Items y la función para guardarlos
@@ -77,6 +72,50 @@ function useLocalStorage(itemName, initialValue) {
     error,
     sincronizeItem,
   }
+}
+
+const initialState = ({ initialValue }) => ({
+  syncItem: true,
+  loading: true,
+  error: false,
+  item: initialValue,
+})
+
+const actionTypes = {
+  error: 'ERROR',
+  successfulLoad: 'SUCCESSFUL_LOAD',
+  save: 'SAVE',
+  sincronize: 'SINCRONIZE',
+}
+
+const reducer = (state, action) => {
+  const actions = {
+    [actionTypes.error]: {
+      ...state,
+      error: true,
+      loading: false,
+    },
+    [actionTypes.successfulLoad]: { 
+      ...state,
+      error: false,
+      loading: false,
+      syncItem: true,
+      item: action.payload,
+    },
+    [actionTypes.save]: { 
+      ...state,
+      item: action.payload,
+    },
+    [actionTypes.sincronize]: {
+      ...state,
+      syncItem: false,
+      loading: true,
+    },
+    default: {
+      ...state,
+    }
+  }
+  return actions[action.type] || actions.default
 }
 
 export { useLocalStorage }

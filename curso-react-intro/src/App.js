@@ -33,7 +33,9 @@ function App() {
   return (
     <div className="flex flex-col p-5 gap-y-10 items-center  h-full">
       <TodoCounter totalTodos={totalTodos} completedTodos={completedTodos} />
-      <TodoSearch searchValue={searchValue} setSearchValue={setSearchValue} loading={loading} />
+      <TodoSearch searchValue={searchValue} 
+      setSearchValue={setSearchValue}
+      loading={loading} />
 
       <TodoList
         error={error}
