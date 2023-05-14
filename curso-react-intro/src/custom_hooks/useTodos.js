@@ -69,22 +69,30 @@ function useTodos() {
       // Actualizo los ToDos con persistencia
       saveTodos(newTodos);
     };
-  
-  return (
-    {
+
+    const states ={
       loading,
       error,
       completedTodos,
       totalTodos,
       searchValue,
-      setSearchValue,
+      openModal,
       searchedTodos,
+    }
+
+    const stateUpdaters = {
+      setSearchValue,
       toggleCompleteTodo,
       deleteTodo,
-      openModal,
       setOpenModal,
       addTodo,
       sincronizeTodos,
+    }
+  
+  return (
+    {
+      states,
+      stateUpdaters,
     }
   )
 }

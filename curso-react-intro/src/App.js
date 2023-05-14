@@ -14,22 +14,27 @@ import { StorageChangeAlert } from "./components/StorageChangeAlert";
 import { Modal } from "./components/Modal";
 
 function App() {
+  const { states, stateUpdaters } = useTodos();
+
   const {
     loading,
     error,
     searchedTodos,
     totalTodos,
     completedTodos,
-    toggleCompleteTodo,
-    deleteTodo,
     openModal,
     searchValue,
+  } = states;
+
+  const {
+    toggleCompleteTodo,
+    deleteTodo,
     setSearchValue,
     setOpenModal,
     addTodo,
     sincronizeTodos
-  } = useTodos();
-
+  } = stateUpdaters;
+  
   return (
     <div className="flex flex-col p-5 gap-y-10 items-center  h-full">
       <TodoCounter totalTodos={totalTodos} completedTodos={completedTodos} />
